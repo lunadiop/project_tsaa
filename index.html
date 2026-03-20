@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AG - Architecture & Flowcharts (Lot 2)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a2e;
+            --card-bg: #f8f9fa;
+            --border: #dee2e6;
+            --accent: #0070C0;
+            --green: #28a745;
+            --orange: #ffc107;
+            --red: #dc3545;
+            --blue: #007bff;
+            --gray: #6c757d;
+            --shadow: rgba(0,0,0,0.08);
+        }
+        [data-theme="dark"] {
+            --bg: #1a1a2e;
+            --text: #e0e0e0;
+            --card-bg: #16213e;
+            --border: #2a2a4a;
+            --accent: #4da6ff;
+            --shadow: rgba(0,0,0,0.3);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header {
+            background: linear-gradient(135deg, #0070C0, #00447c);
+            color: white; padding: 30px; text-align: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        header h1 { font-size: 1.8em; margin-bottom: 5px; }
+        header p { opacity: 0.9; font-size: 0.95em; }
+        .toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border);
+        }
+        .theme-toggle {
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            color: var(--text); font-size: 0.9em;
+        }
+        nav { background: var(--card-bg); border-radius: 8px; padding: 20px; margin-bottom: 30px; border: 1px solid var(--border); }
+        nav h2 { margin-bottom: 10px; color: var(--accent); }
+        nav ol { padding-left: 20px; }
+        nav li { margin: 6px 0; }
+        nav a { color: var(--accent); text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        .section {
+            margin-bottom: 20px; border: 1px solid var(--border);
+            border-radius: 8px; overflow: hidden; background: var(--card-bg);
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+        .section summary {
+            padding: 16px 20px; cursor: pointer; font-size: 1.15em;
+            font-weight: 600; color: var(--accent); list-style: none;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section summary::-webkit-details-marker { display: none; }
+        .section summary::before { content: "▶"; font-size: 0.8em; transition: transform 0.2s; }
+        .section[open] summary::before { transform: rotate(90deg); }
+        .section-content { padding: 20px; border-top: 1px solid var(--border); background: var(--bg); }
+        .mermaid { margin: 20px 0; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 0.9em; }
+        th { background: var(--accent); color: white; padding: 10px 12px; text-align: left; }
+        td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        tr:nth-child(even) { background: var(--card-bg); }
+        tr.highlight { background: #d4edda !important; font-weight: bold; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+        .badge-green { background: #d4edda; color: #155724; }
+        .badge-orange { background: #fff3cd; color: #856404; }
+        .badge-red { background: #f8d7da; color: #721c24; }
+        .badge-blue { background: #cce5ff; color: #004085; }
+        .badge-gray { background: #e2e3e5; color: #383d41; }
+        .legend { display: flex; gap: 15px; flex-wrap: wrap; margin: 15px 0; padding: 12px; background: var(--card-bg); border-radius: 6px; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 15px 0; border-radius: 0 6px 6px 0; }
+        .note-red { background: #f8d7da; border-left-color: #dc3545; }
+        h3 { color: var(--accent); margin: 20px 0 10px; }
+        h4 { margin: 15px 0 8px; }
+        @media print {
+            header { position: static; }
+            .section { break-inside: avoid; }
+            .theme-toggle { display: none; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            header { padding: 15px; }
+            header h1 { font-size: 1.3em; }
+            .legend { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Architecture & Flowcharts - AG / Aprovall (Lot 2)</h1>
+        <p>Projet SGG - Smart Global Governance | Version 1.0 | 2026-03-20</p>
+    </header>
+
+    <div class="container">
+        <div class="toolbar">
+            <div class="legend">
+                <span class="badge badge-green">Implemente</span>
+                <span class="badge badge-orange">Partiel</span>
+                <span class="badge badge-red">A creer</span>
+                <span class="badge badge-blue">Externe</span>
+                <span class="badge badge-gray">Exclu</span>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">Mode sombre</button>
+        </div>
+
+        <nav>
+            <h2>Table des matieres</h2>
+            <ol>
+                <li><a href="#s1">Vue d'ensemble inter-systemes</a></li>
+                <li><a href="#s2">Processus global d'evaluation (lifecycle)</a></li>
+                <li><a href="#s3">Flux 1 - Creation tiers dans Aprovall</a></li>
+                <li><a href="#s4">Flux 2 - Remontee questionnaire Corporate</a></li>
+                <li><a href="#s5">Flux 3 - Remontee statut evaluation DDQ</a></li>
+                <li><a href="#s6">Flux 4 - MAJ tiers dans Aprovall</a></li>
+                <li><a href="#s7">Flux 5 - Push statut global vers Aprovall</a></li>
+                <li><a href="#s8">Table de verite des statuts</a></li>
+                <li><a href="#s9">Hierarchie des typologies</a></li>
+                <li><a href="#s10">Fin de relation</a></li>
+                <li><a href="#s11">Processus degrade - Pending Align</a></li>
+                <li><a href="#s12">Mapping technique</a></li>
+            </ol>
+        </nav>
+
+        <!-- SECTION 1 -->
+        <details class="section" id="s1" open>
+            <summary>1. Vue d'ensemble inter-systemes</summary>
+            <div class="section-content">
+                <div class="mermaid">
+graph LR
+    UNIFY["UNIFY<br/>(MDM - Golden Source)"]
+    SGG["SGG / Trust<br/>(Corteza)"]
+    APROV["Aprovall<br/>(e-Attestations)"]
+    ALTARES["Altares<br/>(Enrichissement)"]
+    FIRCO["FIRCO<br/>(Lexis Nexis)"]
+    SI["SI AG"]
+
+    UNIFY -->|"Creation / MAJ tiers<br/>(API WebMethods)"| SGG
+    SGG -->|"Flux 1 - Temps reel<br/>Creation tiers"| APROV
+    APROV -->|"Flux 2 - Pull 2x/jour<br/>Reponses questionnaire"| SGG
+    APROV -->|"Flux 3 - Pull 2x/jour<br/>Statut evaluation DDQ"| SGG
+    SGG -->|"Flux 4 - Temps reel<br/>MAJ donnees tiers"| APROV
+    SGG -->|"Flux 5 - Temps reel<br/>Push tp_status"| APROV
+    SGG -->|"Enrichissement<br/>DUNS, UBO, Monitoring"| ALTARES
+    SGG -->|"Screening<br/>PEP, Sanctions"| FIRCO
+    SGG -->|"Diffusion statuts"| SI
+
+    style SGG fill:#fff,stroke:#333,stroke-width:3px
+    style APROV fill:#e8f5e9,stroke:#28a745,stroke-width:2px
+    style UNIFY fill:#cce5ff,stroke:#007bff
+    style ALTARES fill:#cce5ff,stroke:#007bff
+    style FIRCO fill:#cce5ff,stroke:#007bff
+    style SI fill:#cce5ff,stroke:#007bff
+                </div>
+            </div>
+        </details>
+
+        <!-- SECTION 2 -->
+        <details class="section" id="s2">
+            <summary>2. Processus global d'evaluation (lifecycle)</summary>
+            <div class="section-content">
+                <div class="mermaid">
+flowchart TD
+    START(["Tiers cree<br/>(UNIFY ou Trust)"])
+    ALTARES["Recherche Altares"]
+    FOUND{"Candidat ?"}
+    ENRICH["Enrichissement + OSINT"]
+    MANUAL["Recherches manuelles"]
+    ELIG{"Eligible Aprovall ?<br/>status + 13 typologies"}
+    CREATE_AP["Flux 1 : Creation Aprovall"]
+    SCREEN_ONLY["Screening seul"]
+    SCREEN1["1er Screening FIRCO<br/>(auto, pas source verite)"]
+    QUEST["Questionnaire DDQ via Aprovall"]
+    FLUX2["Flux 2 : Pull reponses"]
+    SCREEN2["2eme Screening FIRCO<br/>(manuel, SOURCE VERITE)"]
+    HITS["Analyse hits + OSINT"]
+    RISK["Calcul score risque"]
+    LEVEL{"Risque ?"}
+    AUTO["Approbation auto"]
+    HQ["Escalade HQ"]
+    FLUX3["Flux 3 : Pull statut eval"]
+    TABLE["Table de Verite<br/>Eval x Screening"]
+    PROV{"Rejete prov ?"}
+    CELL["Cellule decisionnelle<br/>(hors perimetre tech)"]
+    FINAL["Statut final"]
+    FLUX5["Flux 5 : Push tp_status"]
+    DIFF["Diffusion SI"]
+
+    START --> ALTARES --> FOUND
+    FOUND -->|Oui| ENRICH
+    FOUND -->|Non| MANUAL
+    ENRICH --> ELIG
+    MANUAL --> ELIG
+    ELIG -->|Oui| CREATE_AP
+    ELIG -->|Non| SCREEN_ONLY
+    CREATE_AP --> SCREEN1 --> QUEST --> FLUX2 --> SCREEN2
+    SCREEN_ONLY --> SCREEN2
+    SCREEN2 --> HITS --> RISK --> LEVEL
+    LEVEL -->|Faible/Moyen| AUTO
+    LEVEL -->|Fort| HQ
+    AUTO --> FLUX3
+    HQ --> FLUX3
+    FLUX3 --> TABLE --> PROV
+    PROV -->|Oui| CELL --> FINAL
+    PROV -->|Non| FINAL
+    FINAL --> FLUX5 --> DIFF
+
+    style CREATE_AP fill:#d4edda,stroke:#28a745
+    style FLUX2 fill:#f8d7da,stroke:#dc3545
+    style FLUX3 fill:#f8d7da,stroke:#dc3545
+    style FLUX5 fill:#f8d7da,stroke:#dc3545
+    style CELL fill:#cce5ff,stroke:#007bff
+    style TABLE fill:#e2e3e5,stroke:#6c757d,stroke-width:2px
+                </div>
+            </div>
+        </details>
+
+        <!-- SECTION 3 -->
+        <details class="section" id="s3">
+            <summary>3. Flux 1 - Creation tiers dans Aprovall <span class="badge badge-green">Implemente</span></summary>
+            <div class="section-content">
+                <h3>3.1 Flowchart decisionnel</h3>
+                <div class="mermaid">
+flowchart TD
+    TRIGGER(["Bouton 'Demarrer screening'<br/>ou 'Tiers non trouve'"])
+    CHK_S{"status IN<br/>(Actif, Pending Trust, NA) ?"}
+    KO1(["STOP : Non eligible"])
+    CHK_T{"Typologie IN<br/>13 codes eligibles ?"}
+    KO2(["STOP : Typologie exclue"])
+    CHK_DUNS{"DUNS ?"}
+
+    M1["POST /thirdparties<br/>companyIdType: DUNS<br/>→ 201 Created"]
+    M2["POST /attributes x6"]
+    MS["aprovall_create_thirdparty.lua"]
+
+    U1["POST /thirdparties<br/>unmanagedSupplierInformation<br/>→ 200 OK"]
+    U2["POST /attributes x6"]
+    US["aprovall_create_unmanaged_tp.lua"]
+
+    CT["POST /contacts<br/>email + lang<br/>aprovall_create_contact.lua"]
+    SAVE["Sauver aprovall_Id<br/>+ aprovall_status = synced"]
+
+    TRIGGER --> CHK_S
+    CHK_S -->|Oui| CHK_T
+    CHK_S -->|Non| KO1
+    CHK_T -->|Oui| CHK_DUNS
+    CHK_T -->|Non| KO2
+    CHK_DUNS -->|Oui| M1 --> M2 --> MS
+    CHK_DUNS -->|Non| U1 --> U2 --> US
+    MS --> CT
+    US --> CT
+    CT --> SAVE
+
+    style M1 fill:#d4edda,stroke:#28a745
+    style M2 fill:#d4edda,stroke:#28a745
+    style U1 fill:#d4edda,stroke:#28a745
+    style U2 fill:#d4edda,stroke:#28a745
+    style CT fill:#d4edda,stroke:#28a745
+    style KO1 fill:#f8d7da,stroke:#dc3545
+    style KO2 fill:#f8d7da,stroke:#dc3545
+                </div>
+
+                <h3>3.2 Mapping attributs</h3>
+                <table>
+                    <tr><th>Champ Corteza</th><th>Attribut Aprovall</th><th>attrId</th><th>Type</th><th>Exemple values</th></tr>
+                    <tr><td><code>classifications</code></td><td>Third Party Classification</td><td>2090</td><td>list_multiple</td><td><code>["SUPPLIER - Local"]</code></td></tr>
+                    <tr><td><code>status</code></td><td>MDM Status</td><td>2091</td><td>list_unique</td><td><code>["Active"]</code></td></tr>
+                    <tr><td><code>tp_status</code></td><td>Third Party Status</td><td>2111</td><td>list_unique</td><td><code>["In Progress"]</code></td></tr>
+                    <tr><td><code>group.aprovall_entity</code></td><td>AGL Entity</td><td>2029</td><td>list_unique</td><td><code>["NG, TICH S.A.S., 1278"]</code></td></tr>
+                    <tr><td><code>agl_contact</code></td><td>AGL Contact</td><td>2092</td><td>string</td><td><code>["email@domain.com"]</code></td></tr>
+                    <tr><td><code>IDUnique</code></td><td>IDUnify</td><td>2031</td><td>string</td><td><code>["ID-12345"]</code></td></tr>
+                </table>
+                <div class="note"><strong>IMPORTANT</strong> : <code>values</code> est TOUJOURS un array JSON <code>[]</code>, meme pour les scalaires.</div>
+
+                <h3>3.3 Typologies eligibles (13 codes)</h3>
+                <table>
+                    <tr><th>Code</th><th>Label FR</th><th>Label EN (envoye)</th><th>Statut init</th></tr>
+                    <tr><td>TBQ</td><td>BANQUE - Local</td><td>BANK - Local</td><td>Actif</td></tr>
+                    <tr><td>HQH</td><td>FOURNISSEUR - Central Hors prod</td><td>SUPPLIER - Central Non Production</td><td>Pending Trust</td></tr>
+                    <tr><td>HQS</td><td>FOURNISSEUR - Central Industriel</td><td>SUPPLIER - Central Industrial</td><td>Pending Trust</td></tr>
+                    <tr><td>SUP</td><td>FOURNISSEUR - Local</td><td>SUPPLIER - Local</td><td>Actif</td></tr>
+                    <tr><td>INTR</td><td>INTERMEDIAIRE - Agent Comm.</td><td>INTERMEDIARY - Commercial Agent</td><td>Actif</td></tr>
+                    <tr><td>INTA</td><td>INTERMEDIAIRE - Apporteur aff.</td><td>INTERMEDIARY - Business Provider</td><td>Actif</td></tr>
+                    <tr><td>INTB</td><td>INTERMEDIAIRE - Courtage bank</td><td>INTERMEDIARY - Banking and Insurance Brokerage</td><td>Actif</td></tr>
+                    <tr><td>INTC</td><td>INTERMEDIAIRE - Courtage douane</td><td>INTERMEDIARY - Customs Brokerage</td><td>Actif</td></tr>
+                    <tr><td>INTD</td><td>INTERMEDIAIRE - Distribution</td><td>INTERMEDIARY - Distribution</td><td>Actif</td></tr>
+                    <tr><td>INTM</td><td>INTERMEDIAIRE - Formalites</td><td>INTERMEDIARY - Administrative Formalities</td><td>Actif</td></tr>
+                    <tr><td>INTF</td><td>INTERMEDIAIRE - M&amp;A</td><td>INTERMEDIARY - M&amp;A</td><td>Actif</td></tr>
+                    <tr><td>INTH</td><td>INTERMEDIAIRE - RH</td><td>INTERMEDIARY - HR</td><td>Actif</td></tr>
+                    <tr><td>TRS</td><td>TRANSPORTEUR - Route</td><td>TRUCKER - Road</td><td>Pending Trust</td></tr>
+                    <tr><td>TRSY</td><td>TRANSPORTEUR - Syndicat</td><td>TRUCKER - Syndicate</td><td>Pending Trust</td></tr>
+                </table>
+            </div>
+        </details>
+
+        <!-- SECTION 4 -->
+        <details class="section" id="s4">
+            <summary>4. Flux 2 - Remontee questionnaire Corporate <span class="badge badge-red">A creer</span></summary>
+            <div class="section-content">
+                <div class="mermaid">
+sequenceDiagram
+    participant CRON as Cron (00h/12h)
+    participant LUA as Script Lua
+    participant DB as Corteza DB
+    participant API as Aprovall API
+
+    CRON->>LUA: Declenchement
+    LUA->>DB: Search third_party WHERE aprovall_Id != null
+    DB-->>LUA: Liste tiers
+
+    loop Chaque tiers
+        LUA->>API: GET /thirdparties/{tp_id} + indicators
+        API-->>LUA: Indicateurs
+
+        alt Integrity = Compliant
+            LUA->>API: GET questionnaire Corporate
+            API-->>LUA: Actionnaires, UBO, Admin
+            Note over LUA: Si total >= 20 :<br/>7 actionnaires, 3 UBO, 10 admin<br/>Si total < 20 : tous
+            LUA->>DB: Update third_party fields
+        else Integrity != Compliant
+            Note over LUA: Skip
+        end
+    end
+                </div>
+                <h3>Donnees remontees</h3>
+                <table>
+                    <tr><th>Categorie</th><th>Champs</th><th>Limite (>= 20 total)</th></tr>
+                    <tr><td>Actionnaires</td><td>Nom, Prenom, Nationalite</td><td>7 max</td></tr>
+                    <tr><td>Beneficiaires effectifs</td><td>Nom, Prenom, Nationalite</td><td>3 max</td></tr>
+                    <tr><td>Administrateurs</td><td>Nom, Prenom, Nationalite</td><td>10 max</td></tr>
+                    <tr><td>Denomination sociale</td><td>Raison sociale</td><td>Champ dedie (sans ecraser)</td></tr>
+                </table>
+            </div>
+        </details>
+
+        <!-- SECTION 5 -->
+        <details class="section" id="s5">
+            <summary>5. Flux 3 - Remontee statut evaluation DDQ <span class="badge badge-red">A creer</span></summary>
+            <div class="section-content">
+                <div class="mermaid">
+sequenceDiagram
+    participant CRON as Cron (00h/12h)
+    participant LUA as Script Lua
+    participant DB as Corteza DB
+    participant API as Aprovall API
+    participant TT as Table de Verite
+
+    CRON->>LUA: Declenchement
+    LUA->>DB: Search third_party WHERE aprovall_Id != null
+    DB-->>LUA: Liste tiers
+
+    loop Chaque tiers
+        LUA->>API: GET /thirdparties/{tp_id}
+        API-->>LUA: Statut + indicateurs
+
+        alt Statut change
+            LUA->>DB: Update approval_evaluation_status
+            LUA->>TT: Recalcul (Eval x Screening)
+            TT-->>LUA: Nouveau tp_status
+            LUA->>DB: Update tp_status
+            Note over LUA: Declenche Flux 5
+        end
+    end
+                </div>
+                <h3>Valeurs statut evaluation</h3>
+                <table>
+                    <tr><th>FR</th><th>EN</th><th>Condition</th></tr>
+                    <tr><td>En cours</td><td>In Progress</td><td>1+ indicateur "in progress"</td></tr>
+                    <tr><td>En attente validation</td><td>Waiting Validation</td><td>1+ "waiting" + 0 "in progress" + 0 "not compliant"</td></tr>
+                    <tr><td>Expiration</td><td>Expired</td><td>1+ document expire</td></tr>
+                    <tr><td>Approuve</td><td>Approved</td><td>Tous "compliant"</td></tr>
+                    <tr><td>Rejete</td><td>Rejected</td><td>1+ "not compliant"</td></tr>
+                    <tr><td>Approuve par derogation</td><td>Approved by derogation</td><td>Cellule decisionnelle</td></tr>
+                    <tr><td>Approuve par recours</td><td>Approved appeal</td><td>Cellule decisionnelle</td></tr>
+                </table>
+            </div>
+        </details>
+
+        <!-- SECTION 6 -->
+        <details class="section" id="s6">
+            <summary>6. Flux 4 - MAJ tiers dans Aprovall <span class="badge badge-orange">Partiel</span></summary>
+            <div class="section-content">
+                <h3>6a. Changement statut MDM</h3>
+                <div class="mermaid">
+flowchart TD
+    T(["status modifie"])
+    CHK{"aprovall_Id ?"}
+    NO(["STOP"])
+    OLD{"Transition ?"}
+
+    IA["Inactif → Actif :<br/>Push MDM Status = Active<br/>Reset tp_status = In Progress<br/>Relance screening + Aprovall"]
+    AI["Actif → Inactif :<br/>Push MDM Status = Inactive<br/>tp_status INCHANGE"]
+    OT["Autre :<br/>Push nouveau statut"]
+
+    T --> CHK
+    CHK -->|Non| NO
+    CHK -->|Oui| OLD
+    OLD -->|"Inactif→Actif"| IA
+    OLD -->|"Actif→Inactif"| AI
+    OLD -->|Autre| OT
+
+    style IA fill:#fff3cd,stroke:#ffc107
+    style AI fill:#f8d7da,stroke:#dc3545
+                </div>
+
+                <h3>6b. Changement classification / role</h3>
+                <div class="mermaid">
+flowchart TD
+    T(["classifications modifie"])
+    CHK{"aprovall_Id ?"}
+    NO(["STOP"])
+    ELIG{"Eligible ?"}
+    PUSH["POST /attributes<br/>Third Party Classification"]
+    HIER["Calcul rang hierarchique"]
+    UP{"Montee<br/>rang ?"}
+    RE["SCREENING RELANCE"]
+    NORE["Pas de relance"]
+
+    T --> CHK
+    CHK -->|Non| NO
+    CHK -->|Oui| ELIG
+    ELIG -->|Non| NO
+    ELIG -->|Oui| PUSH --> HIER --> UP
+    UP -->|Oui| RE
+    UP -->|Non| NORE
+
+    style RE fill:#f8d7da,stroke:#dc3545
+    style NORE fill:#d4edda,stroke:#28a745
+                </div>
+
+                <h3>6c. Changement entite AG</h3>
+                <div class="mermaid">
+flowchart TD
+    T(["creating_entity modifie"])
+    CHK{"aprovall_Id ?"}
+    NO(["STOP"])
+    LK["Lookup group.aprovall_entity"]
+    PU["POST /attributes AGL Entity"]
+    NS["Pas de re-screening"]
+
+    T --> CHK
+    CHK -->|Non| NO
+    CHK -->|Oui| LK --> PU --> NS
+                </div>
+
+                <h3>6d. Changement adresse</h3>
+                <div class="mermaid">
+flowchart TD
+    T(["Adresse modifiee"])
+    CHK{"aprovall_Id ?"}
+    NO(["STOP"])
+    DUNS{"DUNS ?"}
+    OK["Rien a faire<br/>(D&B gere)"]
+    FULL["Reevaluation complete<br/>Screening + Aprovall"]
+
+    T --> CHK
+    CHK -->|Non| NO
+    CHK -->|Oui| DUNS
+    DUNS -->|Oui| OK
+    DUNS -->|Non| FULL
+
+    style OK fill:#d4edda,stroke:#28a745
+    style FULL fill:#f8d7da,stroke:#dc3545
+                </div>
+
+                <h3>6e. Changement nom commercial</h3>
+                <div class="mermaid">
+flowchart TD
+    T(["name modifie"])
+    CHK{"aprovall_Id ?"}
+    NO(["STOP"])
+    LEG{"Impact juridique ?"}
+    COS["Cosmetique : MAJ Aprovall"]
+    CLOSE["Archiver ancien<br/>POST /stop"]
+    NEW["Nouveau tiers via UNIFY"]
+
+    T --> CHK
+    CHK -->|Non| NO
+    CHK -->|Oui| LEG
+    LEG -->|Non| COS
+    LEG -->|Oui| CLOSE --> NEW
+
+    style COS fill:#d4edda,stroke:#28a745
+    style CLOSE fill:#f8d7da,stroke:#dc3545
+                </div>
+            </div>
+        </details>
+
+        <!-- SECTION 7 -->
+        <details class="section" id="s7">
+            <summary>7. Flux 5 - Push statut global <span class="badge badge-red">A creer</span></summary>
+            <div class="section-content">
+                <div class="mermaid">
+sequenceDiagram
+    participant TRG as afterUpdate trigger
+    participant LUA as Script Lua
+    participant DB as Corteza DB
+    participant API as Aprovall API
+
+    TRG->>LUA: tp_status change
+    LUA->>DB: Check aprovall_Id
+    DB-->>LUA: aprovall_Id
+
+    alt aprovall_Id existe
+        Note over LUA: Anti-boucle check
+        LUA->>API: POST /attributes<br/>label: Third Party Status<br/>values: [nouveau_status]
+        API-->>LUA: 200 OK
+        LUA->>DB: Update aprovall_sync_date
+    else Absent
+        Note over LUA: Skip
+    end
+                </div>
+                <h3>Mapping tp_status</h3>
+                <table>
+                    <tr><th>SGG (FR)</th><th>Aprovall (EN)</th></tr>
+                    <tr><td>En Attente d'Informations</td><td>In Progress</td></tr>
+                    <tr><td>En Attente d'Approbation</td><td>Waiting Validation</td></tr>
+                    <tr><td>Approuve</td><td>Approved</td></tr>
+                    <tr><td>Rejete provisoirement</td><td>Temporarily Rejected</td></tr>
+                    <tr><td>Rejete</td><td>Rejected</td></tr>
+                </table>
+            </div>
+        </details>
+
+        <!-- SECTION 8 -->
+        <details class="section" id="s8">
+            <summary>8. Table de verite des statuts</summary>
+            <div class="section-content">
+                <h3>8.1 Machine a etats</h3>
+                <div class="mermaid">
+stateDiagram-v2
+    [*] --> InProgress : Creation tiers
+
+    InProgress : En Attente d Informations
+    WaitingVal : En Attente d Approbation
+    Approved : Approuve
+    TempReject : Rejete provisoirement
+    Rejected : Rejete
+
+    InProgress --> InProgress : Eval EnCours + Screen non Rejete
+    InProgress --> TempReject : Screen Rejete OU Eval Rejete
+    InProgress --> WaitingVal : Eval EnAttenteVal ou Approuve + Screen non Rejete
+
+    WaitingVal --> TempReject : Screen Rejete OU Eval Rejete
+    WaitingVal --> Approved : Eval Approuve + Screen Accepte
+
+    TempReject --> Rejected : Cellule -> Rejet
+    TempReject --> Approved : Cellule -> Approbation
+
+    Approved --> InProgress : Expiration DDQ
+    Approved --> TempReject : Re-screening negatif
+                </div>
+
+                <h3>8.2 Table complete (22 lignes)</h3>
+                <div class="note">
+                    <strong>Actif ou Pending Trust*</strong> = uniquement pour TRS, TRSY, HQS, HQH
+                </div>
+                <table>
+                    <tr><th>#</th><th>Eval Aprovall</th><th>Screening</th><th>tp_status prov.</th><th>Apres cellule</th><th>MDM</th></tr>
+                    <tr><td>1</td><td>En cours</td><td>En attente</td><td><strong>En Attente Info</strong></td><td>n/a</td><td>Actif/PT*</td></tr>
+                    <tr><td>2</td><td>En cours</td><td>Accepte</td><td><strong>En Attente Info</strong></td><td>n/a</td><td>Actif/PT*</td></tr>
+                    <tr><td>3</td><td>En cours</td><td>Rejete</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>4</td><td>En cours</td><td>Rejete</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                    <tr><td>5</td><td>En attente val</td><td>En attente</td><td><strong>En Attente Appro</strong></td><td>n/a</td><td>Actif/PT*</td></tr>
+                    <tr><td>6</td><td>En attente val</td><td>Accepte</td><td><strong>En Attente Appro</strong></td><td>n/a</td><td>Actif/PT*</td></tr>
+                    <tr><td>7</td><td>En attente val</td><td>Rejete</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>8</td><td>En attente val</td><td>Rejete</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                    <tr><td>9</td><td>Approuve</td><td>En attente</td><td><strong>En Attente Appro</strong></td><td>n/a</td><td>Actif/PT*</td></tr>
+                    <tr class="highlight"><td><strong>10</strong></td><td><strong>Approuve</strong></td><td><strong>Accepte</strong></td><td><strong>APPROUVE</strong></td><td><strong>APPROUVE</strong></td><td><strong>Actif</strong></td></tr>
+                    <tr><td>11</td><td>Approuve</td><td>Rejete</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>12</td><td>Approuve</td><td>Rejete</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                    <tr><td>13</td><td>Rejete</td><td>En attente</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>14</td><td>Rejete</td><td>En attente</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                    <tr><td>15</td><td>Rejete</td><td>Accepte</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>16</td><td>Rejete</td><td>Accepte</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                    <tr><td>17</td><td>Rejete</td><td>Rejete</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>18</td><td>Rejete</td><td>Rejete</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                    <tr><td>19</td><td>Expiration</td><td>En attente</td><td><strong>En Attente Info</strong></td><td>n/a</td><td>Actif</td></tr>
+                    <tr><td>20</td><td>Expiration</td><td>Accepte</td><td><strong>En Attente Info</strong></td><td>n/a</td><td>Actif</td></tr>
+                    <tr><td>21</td><td>Expiration</td><td>Rejete</td><td>Rejete prov.</td><td>Rejete</td><td>Inactif</td></tr>
+                    <tr><td>22</td><td>Expiration</td><td>Rejete</td><td>Rejete prov.</td><td>Approuve</td><td>Actif</td></tr>
+                </table>
+                <div class="note">
+                    <strong>Seul chemin Approuve :</strong> Eval = Approuve ET Screening = Accepte (ligne 10)
+                </div>
+            </div>
+        </details>
+
+        <!-- SECTION 9 -->
+        <details class="section" id="s9">
+            <summary>9. Hierarchie des typologies</summary>
+            <div class="section-content">
+                <div class="mermaid">
+graph TD
+    subgraph R1["Rang 1"]
+        HQH["HQH - Central Hors prod"]
+        HQS["HQS - Central Industriel"]
+    end
+    subgraph R2["Rang 2"]
+        TRS["TRS - Route"]
+        TRSY["TRSY - Syndicat"]
+    end
+    subgraph R3["Rang 3"]
+        SUP["SUP - Local"]
+        INTR["INTR"]
+        INTA["INTA"]
+        INTB["INTB"]
+        INTC["INTC"]
+        INTD["INTD"]
+        INTM["INTM"]
+        INTF["INTF"]
+        INTH["INTH"]
+    end
+    subgraph R4["Rang 4"]
+        TBQ["TBQ - Banque"]
+    end
+    subgraph R5["Rang 5 - Non Aprovall"]
+        INSTA["INSTA"]
+        TBF["TBF"]
+        ADM["Admin PM/PP"]
+    end
+    subgraph R69["Rang 6-9 - Non Aprovall"]
+        TPRM["TPRM/TPRJ/TPRP"]
+        ASSO["ASSO"]
+        RCU["RCU"]
+        INTT["INSTR"]
+    end
+
+    R69 -.->|"Montee rang"| R5
+    R5 -.-> R4
+    R4 -.-> R3
+    R3 -.->|"RE-SCREENING"| R2
+    R2 -.->|"RE-SCREENING"| R1
+
+    style R1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style R2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style R3 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style R4 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style R5 fill:#e2e3e5,stroke:#6c757d
+    style R69 fill:#e2e3e5,stroke:#6c757d
+                </div>
+                <h3>Regles</h3>
+                <table>
+                    <tr><th>Mouvement</th><th>Effet</th></tr>
+                    <tr><td>Rang egal ou descente</td><td><strong>Aucun impact</strong></td></tr>
+                    <tr><td>Montee de rang (ex: 3 → 1)</td><td><strong>Screening relance automatiquement</strong></td></tr>
+                </table>
+            </div>
+        </details>
+
+        <!-- SECTION 10 -->
+        <details class="section" id="s10">
+            <summary>10. Fin de relation</summary>
+            <div class="section-content">
+                <div class="mermaid">
+flowchart TD
+    T(["UNIFY : Inactif"])
+    TR["Trust : status = Inactif"]
+    CHK{"aprovall_Id ?"}
+    AP["Aprovall : MDM Status = Inactive<br/>POST /attributes"]
+    AR["Aprovall : Archivage<br/>POST /thirdparties/{id}/stop"]
+    AL["Altares : Arret monitoring"]
+    FI["Trust : fiche intacte<br/>seul status = Inactif"]
+
+    T --> TR --> CHK
+    CHK -->|Oui| AP --> AR --> AL
+    CHK -->|Non| AL
+    AL --> FI
+                </div>
+            </div>
+        </details>
+
+        <!-- SECTION 11 -->
+        <details class="section" id="s11">
+            <summary>11. Processus degrade - Pending Align</summary>
+            <div class="section-content">
+                <div class="mermaid">
+flowchart TD
+    subgraph P1["Phase 1 : Pre-deploiement"]
+        C1["UNIFY : Creation<br/>Roles = reel + PENDINGALIGN<br/>Status = Actif"]
+        T1["Trust : Tiers cree"]
+        E1["Enrichissement + Screening"]
+        D1["Diffusion statut"]
+        N1["PENDINGALIGN pas dans<br/>13 codes Aprovall"]
+    end
+
+    subgraph P2["Phase 2 : Post-deploiement"]
+        U2["UNIFY : Retrait PENDINGALIGN"]
+        T2["Trust : MAJ classifications"]
+        CH{"Eligible Aprovall ?"}
+        F1["Flux 1 : Creation Aprovall"]
+        NM["Processus normal"]
+    end
+
+    C1 --> T1 --> E1 --> D1
+    T1 --> N1
+    P1 -->|"Trust deploye"| U2
+    U2 --> T2 --> CH
+    CH -->|Oui| F1 --> NM
+    CH -->|Non| NM
+
+    style P1 fill:#fff3cd,stroke:#ffc107
+    style P2 fill:#d4edda,stroke:#28a745
+                </div>
+            </div>
+        </details>
+
+        <!-- SECTION 12 -->
+        <details class="section" id="s12">
+            <summary>12. Mapping technique</summary>
+            <div class="section-content">
+                <h3>12a. UNIFY → SGG</h3>
+                <table>
+                    <tr><th>UNIFY</th><th>Corteza</th><th>Module</th><th>Obligatoire</th></tr>
+                    <tr><td>ID Unify</td><td><code>IDUnique</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Nom commercial</td><td><code>name</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Entite AG</td><td><code>creating_entity</code></td><td>third_party → group</td><td>Oui</td></tr>
+                    <tr><td>Courriel(s)</td><td><code>agl_contact</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Adresse</td><td><code>address</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Code postal</td><td><code>postal_code</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Ville</td><td><code>city</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Pays</td><td><code>country</code></td><td>third_party → country</td><td>Oui</td></tr>
+                    <tr><td>Role(s)</td><td><code>classifications</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Statut</td><td><code>status</code></td><td>third_party</td><td>Oui</td></tr>
+                    <tr><td>Point contact AG</td><td><code>agl_contact</code></td><td>third_party</td><td>Non</td></tr>
+                </table>
+
+                <h3>12b. SGG → Aprovall (par flux)</h3>
+                <table>
+                    <tr><th>Champ</th><th>Attribut Aprovall</th><th>attrId</th><th>F1</th><th>F4</th><th>F5</th><th>Endpoint</th></tr>
+                    <tr><td><code>duns</code></td><td>companyIdValue</td><td>-</td><td>Managed</td><td>-</td><td>-</td><td>POST /thirdparties</td></tr>
+                    <tr><td><code>name</code></td><td>unmanaged.name</td><td>-</td><td>Unmanaged</td><td>-</td><td>-</td><td>POST /thirdparties</td></tr>
+                    <tr><td><code>classifications</code></td><td>TP Classification</td><td>2090</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>POST /attributes</td></tr>
+                    <tr><td><code>status</code></td><td>MDM Status</td><td>2091</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>POST /attributes</td></tr>
+                    <tr><td><code>tp_status</code></td><td>TP Status</td><td>2111</td><td>&#10004;</td><td>-</td><td>&#10004;</td><td>POST /attributes</td></tr>
+                    <tr><td><code>group.entity</code></td><td>AGL Entity</td><td>2029</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>POST /attributes</td></tr>
+                    <tr><td><code>agl_contact</code></td><td>AGL Contact</td><td>2092</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>POST /attributes</td></tr>
+                    <tr><td><code>IDUnique</code></td><td>IDUnify</td><td>2031</td><td>&#10004;</td><td>&#10004;</td><td>-</td><td>POST /attributes</td></tr>
+                </table>
+
+                <h3>12c. Aprovall → SGG (Flux 2+3)</h3>
+                <table>
+                    <tr><th>Donnee Aprovall</th><th>Champ Corteza</th><th>Flux</th><th>Frequence</th></tr>
+                    <tr><td>Statut evaluation DDQ</td><td><code>approval_evaluation_status</code></td><td>Flux 3</td><td>2x/jour</td></tr>
+                    <tr><td>Denomination sociale</td><td><code>legal_name_aprovall</code></td><td>Flux 2</td><td>2x/jour</td></tr>
+                    <tr><td>Actionnaires</td><td>Multivalue / PM-PP</td><td>Flux 2</td><td>2x/jour</td></tr>
+                    <tr><td>Beneficiaires effectifs</td><td>Multivalue / PM-PP</td><td>Flux 2</td><td>2x/jour</td></tr>
+                    <tr><td>Administrateurs</td><td>Multivalue / PM-PP</td><td>Flux 2</td><td>2x/jour</td></tr>
+                </table>
+
+                <h3>12d. Scripts - Etat d'avancement</h3>
+                <table>
+                    <tr><th>Script</th><th>Flux</th><th>Statut</th><th>Trigger</th></tr>
+                    <tr><td><code>aprovall_create_thirdparty.lua</code></td><td>1</td><td><span class="badge badge-green">Implemente</span></td><td>Bouton screening</td></tr>
+                    <tr><td><code>aprovall_create_unmanaged_tp.lua</code></td><td>1</td><td><span class="badge badge-green">Implemente</span></td><td>Bouton tiers non trouve</td></tr>
+                    <tr><td><code>aprovall_create_contact.lua</code></td><td>1</td><td><span class="badge badge-green">Implemente</span></td><td>Apres creation tiers</td></tr>
+                    <tr><td><code>aprovall_update_tp_attributes.lua</code></td><td>4</td><td><span class="badge badge-orange">Partiel</span></td><td>afterUpdate (a coder)</td></tr>
+                    <tr><td><code>aprovall_pull_questionnaire.lua</code></td><td>2</td><td><span class="badge badge-red">A creer</span></td><td>Cron 00h/12h</td></tr>
+                    <tr><td><code>aprovall_pull_eval_status.lua</code></td><td>3</td><td><span class="badge badge-red">A creer</span></td><td>Cron 00h/12h</td></tr>
+                    <tr><td><code>aprovall_push_tp_status.lua</code></td><td>5</td><td><span class="badge badge-red">A creer</span></td><td>afterUpdate tp_status</td></tr>
+                    <tr><td><code>aprovall_archive_tp.lua</code></td><td>Fin rel.</td><td><span class="badge badge-red">A creer</span></td><td>status → Inactif</td></tr>
+                    <tr><td><code>truth_table_engine.lua</code></td><td>Transv.</td><td><span class="badge badge-red">A creer</span></td><td>Apres Flux 3 / screening</td></tr>
+                    <tr><td><code>hierarchy_check.lua</code></td><td>4b</td><td><span class="badge badge-red">A creer</span></td><td>Apres MAJ classifications</td></tr>
+                </table>
+            </div>
+        </details>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+            sequence: { useMaxWidth: true, wrap: true }
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.textContent = 'Mode sombre';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.textContent = 'Mode clair';
+            }
+        }
+    </script>
+</body>
+</html>
