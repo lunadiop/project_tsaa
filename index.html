@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AG - Architecture & Flowcharts (Lot 2)</title>
+    <title>AGL - Architecture & Flowcharts (Lot 2)</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
     <style>
         :root {
@@ -104,7 +104,7 @@
 </head>
 <body>
     <header>
-        <h1>Architecture & Flowcharts - AG / Aprovall (Lot 2)</h1>
+        <h1>Architecture & Flowcharts - AGL / Aprovall (Lot 2)</h1>
         <p>Projet SGG - Smart Global Governance | Version 1.0 | 2026-03-20</p>
     </header>
 
@@ -149,7 +149,7 @@ graph LR
     APROV["Aprovall<br/>(e-Attestations)"]
     ALTARES["Altares<br/>(Enrichissement)"]
     FIRCO["FIRCO<br/>(Lexis Nexis)"]
-    SI["SI AG"]
+    SI["SI AGL"]
 
     UNIFY -->|"Creation / MAJ tiers<br/>(API WebMethods)"| SGG
     SGG -->|"Flux 1 - Temps reel<br/>Creation tiers"| APROV
@@ -444,7 +444,7 @@ flowchart TD
     style NORE fill:#d4edda,stroke:#28a745
                 </div>
 
-                <h3>6c. Changement entite AG</h3>
+                <h3>6c. Changement entite AGL</h3>
                 <div class="mermaid">
 flowchart TD
     T(["creating_entity modifie"])
@@ -730,7 +730,7 @@ flowchart TD
                     <tr><th>UNIFY</th><th>Corteza</th><th>Module</th><th>Obligatoire</th></tr>
                     <tr><td>ID Unify</td><td><code>IDUnique</code></td><td>third_party</td><td>Oui</td></tr>
                     <tr><td>Nom commercial</td><td><code>name</code></td><td>third_party</td><td>Oui</td></tr>
-                    <tr><td>Entite AG</td><td><code>creating_entity</code></td><td>third_party → group</td><td>Oui</td></tr>
+                    <tr><td>Entite AGL</td><td><code>creating_entity</code></td><td>third_party → group</td><td>Oui</td></tr>
                     <tr><td>Courriel(s)</td><td><code>agl_contact</code></td><td>third_party</td><td>Oui</td></tr>
                     <tr><td>Adresse</td><td><code>address</code></td><td>third_party</td><td>Oui</td></tr>
                     <tr><td>Code postal</td><td><code>postal_code</code></td><td>third_party</td><td>Oui</td></tr>
@@ -738,7 +738,7 @@ flowchart TD
                     <tr><td>Pays</td><td><code>country</code></td><td>third_party → country</td><td>Oui</td></tr>
                     <tr><td>Role(s)</td><td><code>classifications</code></td><td>third_party</td><td>Oui</td></tr>
                     <tr><td>Statut</td><td><code>status</code></td><td>third_party</td><td>Oui</td></tr>
-                    <tr><td>Point contact AG</td><td><code>agl_contact</code></td><td>third_party</td><td>Non</td></tr>
+                    <tr><td>Point contact AGL</td><td><code>agl_contact</code></td><td>third_party</td><td>Non</td></tr>
                 </table>
 
                 <h3>12b. SGG → Aprovall (par flux)</h3>
